@@ -17,6 +17,8 @@ class ConversationTool(BaseTool):
     - Handles file operations with error checking
     - Supports special character encoding/decoding
     - Manages separate import/export directories
+    - Uses AI for intelligent title generation
+    - Includes comprehensive metadata and versioning
     """
     input_schema = {
         "type": "object",
@@ -37,6 +39,8 @@ class ConversationTool(BaseTool):
         },
         "required": ["action"],
     }
+
+    VERSION = "1.1.0"
 
     def __init__(self):
         super().__init__()
@@ -164,10 +168,14 @@ class ConversationTool(BaseTool):
             file_path = kwargs.get("file_path")
             if not file_path:
                 raise ValueError("file_path is required for load action")
-            return self._load_conversation(file_path)
+            data = self._load_conversation(file_path)
+            # Convert dictionary to string for Claude API compatibility
+            return json.dumps(data, ensure_ascii=False, indent=2)
 
         elif action == "list":
-            return self._list_conversations()
+            conversations = self._list_conversations()
+            # Convert list to formatted string for Claude API compatibility
+            return json.dumps(conversations, ensure_ascii=False, indent=2)
 
         else:
             raise ValueError("Invalid action. Must be 'save', 'load', or 'list'")
