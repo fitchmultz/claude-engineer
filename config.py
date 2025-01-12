@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
-    ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+    ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
     MODEL = "claude-3-5-sonnet-20241022"
     MAX_TOKENS = 8000
     MAX_CONVERSATION_TOKENS = 200000  # Maximum tokens per conversation

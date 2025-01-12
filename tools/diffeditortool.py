@@ -2,9 +2,10 @@ from tools.base import BaseTool
 import os
 from typing import Dict
 
+
 class DiffEditorTool(BaseTool):
     name = "diffeditortool"
-    description = '''
+    description = """
     Performs a precise replacement of a given text snippet in a specified file.
     It takes the following inputs:
     - path: The path to the target file.
@@ -17,25 +18,22 @@ class DiffEditorTool(BaseTool):
     3. If found, replace the first occurrence of `old_text` with `new_text`.
     4. Write the modified content back to the file.
     5. Return a success message if successful, or indicate that the old_text was not found.
-    '''
+    """
 
     input_schema = {
         "type": "object",
         "properties": {
-            "path": {
-                "type": "string",
-                "description": "Path to the file to be edited."
-            },
+            "path": {"type": "string", "description": "Path to the file to be edited."},
             "old_text": {
                 "type": "string",
-                "description": "Exact substring in the file to replace."
+                "description": "Exact substring in the file to replace.",
             },
             "new_text": {
                 "type": "string",
-                "description": "New substring that will replace old_text."
-            }
+                "description": "New substring that will replace old_text.",
+            },
         },
-        "required": ["path", "old_text", "new_text"]
+        "required": ["path", "old_text", "new_text"],
     }
 
     def execute(self, **kwargs) -> str:
@@ -49,7 +47,7 @@ class DiffEditorTool(BaseTool):
 
         # Read the file content
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
         except Exception as e:
             return f"Error reading file {path}: {str(e)}"
@@ -61,11 +59,11 @@ class DiffEditorTool(BaseTool):
 
         # Replace the first occurrence of old_text with new_text
         # Since find gave us the exact start, we can do a direct substring replacement:
-        new_content = content[:index] + new_text + content[index+len(old_text):]
+        new_content = content[:index] + new_text + content[index + len(old_text) :]
 
         # Write the updated content back to the file
         try:
-            with open(path, 'w', encoding='utf-8') as f:
+            with open(path, "w", encoding="utf-8") as f:
                 f.write(new_content)
         except Exception as e:
             return f"Error writing updated content to file {path}: {str(e)}"

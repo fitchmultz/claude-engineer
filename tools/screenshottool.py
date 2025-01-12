@@ -10,11 +10,14 @@ try:
 except ImportError as e:
     # If pyautogui or PIL is missing, you may need to rely on the uvpackagemanager tool
     # or instruct the user to install them. For now, just raise an error.
-    raise ImportError("The ScreenshotTool requires 'pyautogui' and 'Pillow' to be installed.")
+    raise ImportError(
+        "The ScreenshotTool requires 'pyautogui' and 'Pillow' to be installed."
+    )
+
 
 class ScreenshotTool(BaseTool):
     name = "screenshottool"
-    description = '''
+    description = """
     Captures a screenshot of the current screen and returns an image block ready to be sent to Claude.
     Optionally, a specific region of the screen can be captured by providing coordinates.
 
@@ -35,7 +38,7 @@ class ScreenshotTool(BaseTool):
     ]
 
     This block can be inserted into the messages array sent to Claude via the Messages API.
-    '''
+    """
     input_schema = {
         "type": "object",
         "properties": {
@@ -44,10 +47,10 @@ class ScreenshotTool(BaseTool):
                 "items": {"type": "integer"},
                 "description": "Optional region [x, y, width, height] to capture",
                 "minItems": 4,
-                "maxItems": 4
+                "maxItems": 4,
             }
         },
-        "required": []
+        "required": [],
     }
 
     def execute(self, **kwargs) -> Any:
@@ -72,7 +75,7 @@ class ScreenshotTool(BaseTool):
                         "type": "base64",
                         "media_type": "image/png",
                         "data": encoded_data,
-                    }
+                    },
                 }
             ]
 

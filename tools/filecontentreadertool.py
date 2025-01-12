@@ -3,40 +3,152 @@ import os
 import json
 import mimetypes
 
+
 class FileContentReaderTool(BaseTool):
     name = "filecontentreadertool"
-    description = '''
+    description = """
     Reads content from multiple files and returns their contents.
     Accepts a list of file paths and returns a dictionary with file paths as keys
     and their content as values.
     Handles file reading errors gracefully with built-in Python exceptions.
     When given a directory, recursively reads all text files while skipping binaries and common ignore patterns.
-    '''
-    
+    """
+
     # Files and directories to ignore
     IGNORE_PATTERNS = {
         # Hidden files and directories
-        '.git', '.svn', '.hg', '.DS_Store', '.env', '.idea', '.vscode', '.settings',
+        ".git",
+        ".svn",
+        ".hg",
+        ".DS_Store",
+        ".env",
+        ".idea",
+        ".vscode",
+        ".settings",
         # Build directories
-        'node_modules', '__pycache__', 'build', 'dist', 'venv', 'env', 'bin', 'obj',
-        'target', 'out', 'Debug', 'Release', 'x64', 'x86', 'builds', 'coverage',
+        "node_modules",
+        "__pycache__",
+        "build",
+        "dist",
+        "venv",
+        "env",
+        "bin",
+        "obj",
+        "target",
+        "out",
+        "Debug",
+        "Release",
+        "x64",
+        "x86",
+        "builds",
+        "coverage",
         # Binary file extensions
-        '.pyc', '.pyo', '.so', '.dll', '.dylib', '.pdb', '.ilk', '.exp', '.map',
-        '.exe', '.bin', '.dat', '.db', '.sqlite', '.sqlite3', '.o', '.cache',
-        '.lib', '.a', '.sys', '.ko', '.obj', '.iso', '.msi', '.msp', '.msm',
-        '.img', '.dmg', '.class', '.jar', '.war', '.ear', '.aar', '.apk',
+        ".pyc",
+        ".pyo",
+        ".so",
+        ".dll",
+        ".dylib",
+        ".pdb",
+        ".ilk",
+        ".exp",
+        ".map",
+        ".exe",
+        ".bin",
+        ".dat",
+        ".db",
+        ".sqlite",
+        ".sqlite3",
+        ".o",
+        ".cache",
+        ".lib",
+        ".a",
+        ".sys",
+        ".ko",
+        ".obj",
+        ".iso",
+        ".msi",
+        ".msp",
+        ".msm",
+        ".img",
+        ".dmg",
+        ".class",
+        ".jar",
+        ".war",
+        ".ear",
+        ".aar",
+        ".apk",
         # Media files
-        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.psd', '.ai', '.eps',
-        '.mp3', '.mp4', '.avi', '.mov', '.wav', '.aac', '.m4a', '.wma', '.midi',
-        '.flv', '.mkv', '.wmv', '.m4v', '.webm', '.3gp', '.mpg', '.mpeg', '.m2v',
-        '.ogg', '.ogv', '.webp', '.heic', '.raw', '.svg', '.ico', '.icns',
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".bmp",
+        ".tiff",
+        ".psd",
+        ".ai",
+        ".eps",
+        ".mp3",
+        ".mp4",
+        ".avi",
+        ".mov",
+        ".wav",
+        ".aac",
+        ".m4a",
+        ".wma",
+        ".midi",
+        ".flv",
+        ".mkv",
+        ".wmv",
+        ".m4v",
+        ".webm",
+        ".3gp",
+        ".mpg",
+        ".mpeg",
+        ".m2v",
+        ".ogg",
+        ".ogv",
+        ".webp",
+        ".heic",
+        ".raw",
+        ".svg",
+        ".ico",
+        ".icns",
         # Archive files
-        '.zip', '.tar', '.gz', '.rar', '.7z', '.pkg', '.deb', '.rpm', '.snap',
-        '.bz2', '.xz', '.cab', '.iso', '.tgz', '.tbz2', '.lz', '.lzma', '.tlz',
+        ".zip",
+        ".tar",
+        ".gz",
+        ".rar",
+        ".7z",
+        ".pkg",
+        ".deb",
+        ".rpm",
+        ".snap",
+        ".bz2",
+        ".xz",
+        ".cab",
+        ".iso",
+        ".tgz",
+        ".tbz2",
+        ".lz",
+        ".lzma",
+        ".tlz",
         # IDE and editor files
-        '.sln', '.suo', '.user', '.workspace', '.project', '.classpath', '.iml',
+        ".sln",
+        ".suo",
+        ".user",
+        ".workspace",
+        ".project",
+        ".classpath",
+        ".iml",
         # Log and temp files
-        '.log', '.tmp', '.temp', '.swp', '.bak', '.old', '.orig', '.pid'
+        ".log",
+        ".tmp",
+        ".temp",
+        ".swp",
+        ".bak",
+        ".old",
+        ".orig",
+        ".pid",
     }
 
     input_schema = {
@@ -44,13 +156,11 @@ class FileContentReaderTool(BaseTool):
         "properties": {
             "file_paths": {
                 "type": "array",
-                "items": {
-                    "type": "string"
-                },
-                "description": "List of file paths to read"
+                "items": {"type": "string"},
+                "description": "List of file paths to read",
             }
         },
-        "required": ["file_paths"]
+        "required": ["file_paths"],
     }
 
     def _should_skip(self, path: str) -> bool:
@@ -63,13 +173,13 @@ class FileContentReaderTool(BaseTool):
             return True
 
         # Skip hidden files/directories (starting with .)
-        if name.startswith('.'):
+        if name.startswith("."):
             return True
 
         # If it's a file, check if it's binary using mimetype
         if os.path.isfile(path):
             mime_type, _ = mimetypes.guess_type(path)
-            if mime_type and not mime_type.startswith('text/'):
+            if mime_type and not mime_type.startswith("text/"):
                 return True
 
         return False
@@ -83,7 +193,7 @@ class FileContentReaderTool(BaseTool):
             if self._should_skip(file_path):
                 return "Skipped: Binary or ignored file type"
 
-            with open(file_path, 'r', encoding='utf-8') as file:
+            with open(file_path, "r", encoding="utf-8") as file:
                 return file.read()
 
         except PermissionError:
@@ -102,7 +212,9 @@ class FileContentReaderTool(BaseTool):
         try:
             for root, dirs, files in os.walk(dir_path):
                 # Filter out directories to skip
-                dirs[:] = [d for d in dirs if not self._should_skip(os.path.join(root, d))]
+                dirs[:] = [
+                    d for d in dirs if not self._should_skip(os.path.join(root, d))
+                ]
 
                 # Process files
                 for file in files:
@@ -117,7 +229,7 @@ class FileContentReaderTool(BaseTool):
         return results
 
     def execute(self, **kwargs) -> str:
-        file_paths = kwargs.get('file_paths', [])
+        file_paths = kwargs.get("file_paths", [])
         results = {}
 
         try:

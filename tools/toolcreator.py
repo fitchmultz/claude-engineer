@@ -9,37 +9,38 @@ import anthropic
 
 load_dotenv()
 
+
 class ToolCreatorTool(BaseTool):
     name = "toolcreator"
-    description = '''
+    description = """
     Creates a new tool based on a natural language description.
     Use this when you need a new capability that isn't available in current tools.
     The tool will be automatically generated and saved to the tools directory.
     Returns the generated tool code and creation status.
-    '''
+    """
     input_schema = {
         "type": "object",
         "properties": {
             "description": {
                 "type": "string",
-                "description": "Natural language description of what the tool should do"
+                "description": "Natural language description of what the tool should do",
             }
         },
-        "required": ["description"]
+        "required": ["description"],
     }
 
     def __init__(self):
-        self.client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+        self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         self.console = Console()
         self.tools_dir = Path(__file__).parent.parent / "tools"  # Fixed path
 
     def _sanitize_filename(self, name: str) -> str:
         """Convert tool name to valid Python filename"""
-        return name + '.py'  # Keep exact name, just add .py
+        return name + ".py"  # Keep exact name, just add .py
 
     def _validate_tool_name(self, name: str) -> bool:
         """Validate tool name matches required pattern"""
-        return bool(re.match(r'^[a-zA-Z0-9_-]{1,64}$', name))
+        return bool(re.match(r"^[a-zA-Z0-9_-]{1,64}$", name))
 
     def execute(self, **kwargs) -> str:
         description = kwargs.get("description")
@@ -91,9 +92,7 @@ Return ONLY the Python code without any explanation or markdown formatting.
                 model="claude-3-5-sonnet-20241022",
                 max_tokens=4000,
                 temperature=0,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
+                messages=[{"role": "user", "content": prompt}],
             )
 
             tool_code = response.content[0].text.strip()
@@ -111,7 +110,7 @@ Return ONLY the Python code without any explanation or markdown formatting.
 
             # Save tool to file
             file_path = self.tools_dir / filename
-            with open(file_path, 'w') as f:
+            with open(file_path, "w") as f:
                 f.write(tool_code)
 
             # Format the response using Panel like the original

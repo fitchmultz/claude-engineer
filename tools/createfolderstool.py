@@ -3,26 +3,25 @@ import os
 import pathlib
 from typing import List
 
+
 class CreateFoldersTool(BaseTool):
     name = "createfolderstool"
-    description = '''
+    description = """
     Creates new folders at specified paths, including nested directories if needed.
     Accepts a list of folder paths and creates each folder along with any necessary parent directories.
     Supports both absolute and relative paths.
     Returns status messages for each folder creation attempt.
-    '''
+    """
     input_schema = {
         "type": "object",
         "properties": {
             "folder_paths": {
                 "type": "array",
-                "items": {
-                    "type": "string"
-                },
-                "description": "List of folder paths to create"
+                "items": {"type": "string"},
+                "description": "List of folder paths to create",
             }
         },
-        "required": ["folder_paths"]
+        "required": ["folder_paths"],
     }
 
     def execute(self, **kwargs) -> str:
@@ -36,7 +35,7 @@ class CreateFoldersTool(BaseTool):
                 # Normalize path
                 normalized_path = os.path.normpath(path)
                 absolute_path = os.path.abspath(normalized_path)
-                
+
                 # Validate path
                 if not all(c not in '<>:"|?*' for c in absolute_path):
                     results.append(f"Invalid characters in path: {path}")

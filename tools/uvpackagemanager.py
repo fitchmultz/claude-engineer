@@ -7,41 +7,41 @@ from tools.base import BaseTool
 
 class UVPackageManager(BaseTool):
     name = "uvpackagemanager"
-    description = '''
+    description = """
     Comprehensive interface to the uv package manager providing package management,
     project management, Python version management, tool management, and script support.
     Supports all major platforms with pip compatibility.
-    '''
+    """
     input_schema = {
         "type": "object",
         "properties": {
             "command": {
                 "type": "string",
-                "description": "Primary command (install, remove, update, init, venv, etc.)"
+                "description": "Primary command (install, remove, update, init, venv, etc.)",
             },
             "packages": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "List of packages to operate on"
+                "description": "List of packages to operate on",
             },
             "python_version": {
                 "type": "string",
-                "description": "Python version for operations that require it"
+                "description": "Python version for operations that require it",
             },
             "project_path": {
                 "type": "string",
-                "description": "Path to project directory"
+                "description": "Path to project directory",
             },
             "requirements_file": {
                 "type": "string",
-                "description": "Path to requirements file"
+                "description": "Path to requirements file",
             },
             "global_install": {
                 "type": "boolean",
-                "description": "Whether to install packages globally"
-            }
+                "description": "Whether to install packages globally",
+            },
         },
-        "required": ["command"]
+        "required": ["command"],
     }
 
     def execute(self, **kwargs) -> str:
@@ -54,7 +54,9 @@ class UVPackageManager(BaseTool):
 
         try:
             if command == "install":
-                return self._install_packages(packages, requirements_file, global_install)
+                return self._install_packages(
+                    packages, requirements_file, global_install
+                )
             elif command == "remove":
                 return self._remove_packages(packages)
             elif command == "update":
@@ -80,16 +82,18 @@ class UVPackageManager(BaseTool):
     def _run_uv_command(self, args: List[str]) -> str:
         try:
             result = subprocess.run(
-                ["uv"] + args,
-                capture_output=True,
-                text=True,
-                check=True
+                ["uv"] + args, capture_output=True, text=True, check=True
             )
             return result.stdout
         except subprocess.CalledProcessError as e:
             raise Exception(f"UV command failed: {e.stderr}")
 
-    def _install_packages(self, packages: List[str], requirements_file: Optional[str], global_install: bool) -> str:
+    def _install_packages(
+        self,
+        packages: List[str],
+        requirements_file: Optional[str],
+        global_install: bool,
+    ) -> str:
         args = ["pip", "install"]
         if global_install:
             args.append("--global")

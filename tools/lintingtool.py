@@ -3,13 +3,14 @@ import subprocess
 from typing import List
 import json
 
+
 class LintingTool(BaseTool):
     name = "lintingtool"
-    description = '''
+    description = """
     Runs the Ruff linter on the given Python files or directories to detect and fix coding style or syntax issues.
     Supports configurable rule selection, automatic fixes, unsafe fixes, adding noqa directives, and watch mode.
     Returns the linter output as a string.
-    '''
+    """
 
     input_schema = {
         "type": "object",
@@ -17,50 +18,50 @@ class LintingTool(BaseTool):
             "paths": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "List of file or directory paths to lint. Defaults to current directory if none provided."
+                "description": "List of file or directory paths to lint. Defaults to current directory if none provided.",
             },
             "fix": {
                 "type": "boolean",
                 "default": False,
-                "description": "Whether to automatically fix fixable issues."
+                "description": "Whether to automatically fix fixable issues.",
             },
             "unsafe_fixes": {
                 "type": "boolean",
                 "default": False,
-                "description": "Enable unsafe fixes."
+                "description": "Enable unsafe fixes.",
             },
             "add_noqa": {
                 "type": "boolean",
                 "default": False,
-                "description": "Add noqa directives to all lines with violations."
+                "description": "Add noqa directives to all lines with violations.",
             },
             "select": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "List of rule codes to exclusively enforce."
+                "description": "List of rule codes to exclusively enforce.",
             },
             "extend_select": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "List of additional rule codes to enforce alongside the default selection."
+                "description": "List of additional rule codes to enforce alongside the default selection.",
             },
             "watch": {
                 "type": "boolean",
                 "default": False,
-                "description": "Watch for file changes and re-run linting on change."
+                "description": "Watch for file changes and re-run linting on change.",
             },
             "exit_zero": {
                 "type": "boolean",
                 "default": False,
-                "description": "Exit with code 0 even if violations are found."
+                "description": "Exit with code 0 even if violations are found.",
             },
             "exit_non_zero_on_fix": {
                 "type": "boolean",
                 "default": False,
-                "description": "Exit with non-zero even if all violations were fixed automatically."
-            }
+                "description": "Exit with non-zero even if all violations were fixed automatically.",
+            },
         },
-        "required": []
+        "required": [],
     }
 
     def execute(self, **kwargs) -> str:
@@ -99,12 +100,7 @@ class LintingTool(BaseTool):
         cmd.extend(paths)
 
         try:
-            result = subprocess.run(
-                cmd,
-                text=True,
-                capture_output=True,
-                check=False
-            )
+            result = subprocess.run(cmd, text=True, capture_output=True, check=False)
             return result.stdout + result.stderr
         except Exception as e:
             return f"Error running ruff check: {str(e)}"
